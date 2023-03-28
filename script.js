@@ -8,8 +8,7 @@ const score1 = document.querySelector('#score--1');
 const score2 = document.querySelector('#score--2');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
-
-let dice;
+const dicePic = document.querySelector('.dice');
 let activeScore = Number(
   document.querySelector('.player--active .score').textContent
 );
@@ -50,11 +49,12 @@ const changeActivePlayer = function () {
   }
 };
 
-//Random Dice Function
-const randomDice = function () {
-  const randomDice = Math.floor(Math.random() * 6) + 1;
-  document.querySelector('.dice').src = `dice-${randomDice}.png`;
-  dice = randomDice;
+//Roll Dice Button Function
+document.querySelector('.btn--roll').addEventListener('click', function () {
+  const dice = Math.floor(Math.random() * 6) + 1;
+  document.querySelector('.dice').src = `dice-${dice}.png`;
+
+  if (dicePic.classList.contains('hidden')) dicePic.classList.remove('hidden');
 
   if (dice === 1) {
     changeActivePlayer();
@@ -62,10 +62,10 @@ const randomDice = function () {
     activeScore += dice;
     returnScore();
   }
-};
+});
 
-//Hold Score Function
-const holdScore = function () {
+//Hold Button Function
+document.querySelector('.btn--hold').addEventListener('click', function () {
   returnCurrent();
   if (activeCurrent() >= 100) {
     modal.classList.remove('hidden');
@@ -74,29 +74,23 @@ const holdScore = function () {
     document.querySelector('.winners-score').textContent = activeCurrent();
   }
   changeActivePlayer();
-};
-
-//New Game Function
-const newGame = function () {
-  if (player2.classList.contains('player--active')) {
-    player2.classList.remove('player--active');
-    player1.classList.add('player--active');
-  }
-  if (!modal.classList.contains('hidden')) {
-    modal.classList.add('hidden');
-    overlay.classList.add('hidden');
-  }
-  score1.textContent = score2.textContent = 0;
-  current1.textContent = current2.textContent = 0;
-};
-
-//Roll Dice Button Function
-document.querySelector('.btn--roll').addEventListener('click', randomDice);
-
-//Hold Button Function
-document.querySelector('.btn--hold').addEventListener('click', holdScore);
+});
 
 //New Game Button Function
-document
-  .querySelectorAll('.btn--new')
-  .forEach((button) => button.addEventListener('click', newGame));
+document.querySelectorAll('.btn--new').forEach((button) =>
+  button.addEventListener('click', function () {
+    if (!dicePic.classList.contains('hidden')) dicePic.classList.add('hidden');
+
+    if (player2.classList.contains('player--active')) {
+      player2.classList.remove('player--active');
+      player1.classList.add('player--active');
+    }
+    if (!modal.classList.contains('hidden')) {
+      modal.classList.add('hidden');
+      overlay.classList.add('hidden');
+    }
+    score1.textContent = score2.textContent = 0;
+    current1.textContent = current2.textContent = 0;
+    activeScore = 0;
+  })
+);
